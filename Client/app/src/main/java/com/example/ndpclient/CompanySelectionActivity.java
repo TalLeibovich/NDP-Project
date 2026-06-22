@@ -28,6 +28,7 @@ public class CompanySelectionActivity extends AppCompatActivity {
     private final List<String> display = new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
+    // Initializes the company selection screen and loads the company list.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +41,10 @@ public class CompanySelectionActivity extends AppCompatActivity {
         btnBackCompany = findViewById(R.id.btnBackCompany);
         listViewCompanies = findViewById(R.id.listViewCompanies);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, display);
+        adapter = new ArrayAdapter<>(this, R.layout.item_list_row, display);
         listViewCompanies.setAdapter(adapter);
 
-        btnBackCompany.setOnClickListener(v -> finishAffinity()); // מסך ראשון -> יציאה
+        btnBackCompany.setOnClickListener(v -> finishAffinity());
 
         btnLoadCompanies.setOnClickListener(v -> loadCompanies());
 
@@ -52,14 +53,11 @@ public class CompanySelectionActivity extends AppCompatActivity {
 
             Company c = companies.get(position);
 
-            // שמירת החברה שנבחרה
             sessionManager.saveCompany(c.getCompanyId(), c.getName());
 
-            // ננקה courier/role קודם – כדי שלא ישאר מהעבר
             sessionManager.clearCourier();
-            sessionManager.saveRole(null); // אם אצלך saveRole לא מאפשר null - תגיד לי ואחליף ל-clearRole()
+            sessionManager.saveRole(null);
 
-            // מעבר למסך בחירת Role
             Intent i2 = new Intent(this, RoleSelectionActivity.class);
             startActivity(i2);
             finish();
@@ -68,6 +66,7 @@ public class CompanySelectionActivity extends AppCompatActivity {
         loadCompanies();
     }
 
+    // Loads the available companies from the API.
     private void loadCompanies() {
         tvCompanyStatus.setText(getString(R.string.loading_companies));
         btnLoadCompanies.setEnabled(false);
@@ -91,6 +90,7 @@ public class CompanySelectionActivity extends AppCompatActivity {
         });
     }
 
+    // Parses the company response and updates the selection list.
     private void parseCompanies(String json) {
         companies.clear();
         display.clear();
@@ -119,6 +119,7 @@ public class CompanySelectionActivity extends AppCompatActivity {
         }
     }
 
+    // Closes the app from the first selection screen.
     @Override
     public void onBackPressed() {
         finishAffinity();

@@ -1,23 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.FinalProject" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.FinalProject" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:colorBackground">@color/app_background</item>
+        <item name="colorPrimary">@color/accent_primary</item>
+        <item name="colorPrimaryDark">@color/accent_active</item>
+        <item name="colorAccent">@color/accent_primary</item>
+        <item name="colorSurface">@color/surface_primary</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:statusBarColor">@color/app_background</item>
+        <item name="android:navigationBarColor">@color/app_background</item>
+        <item name="android:editTextStyle">@style/App.Input</item>
+        <item name="editTextStyle">@style/App.Input</item>
     </style>
 
     <style name="Theme.FinalProject" parent="Base.Theme.FinalProject" />
 
-    <!-- Same button overrides for night mode -->
     <style name="Btn">
         <item name="backgroundTint">@null</item>
         <item name="android:backgroundTint">@null</item>
-
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:paddingLeft">@dimen/spacing_lg</item>
+        <item name="android:paddingRight">@dimen/spacing_lg</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <style name="Btn.Primary" parent="Btn">
         <item name="android:background">@drawable/btn_primary_selector</item>
+    </style>
+
+    <style name="Btn.Secondary" parent="Btn">
+        <item name="android:background">@drawable/btn_secondary_selector</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 
     <style name="Btn.Success" parent="Btn">

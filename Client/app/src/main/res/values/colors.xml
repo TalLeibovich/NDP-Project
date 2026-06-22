@@ -3,18 +3,46 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="primary">#6E50C8</color>
-    <color name="primary_dark">#563AAE</color>
-    <color name="success">#2EAD62</color>
-    <color name="success_dark">#1F8A4B</color>
-    <color name="danger">#D64545</color>
-    <color name="danger_dark">#B83030</color>
-    <color name="warning">#F2B233</color>
-    <color name="background_soft">#F7F4FB</color>
-    <color name="card_bg">#FFFFFF</color>
-    <color name="text_main">#3D3A47</color>
-    <color name="text_secondary">#6F6A7A</color>
-    <color name="divider_light">#DDD7EA</color>
+
+    <color name="app_background">#0F1117</color>
+    <color name="surface_primary">#151821</color>
+    <color name="surface_secondary">#1B1F2A</color>
+    <color name="surface_elevated">#1E222D</color>
+    <color name="surface_hover">#222735</color>
+    <color name="input_background">#11141B</color>
+
+    <color name="border_subtle">#2A3040</color>
+    <color name="border_strong">#323849</color>
+
+    <color name="text_primary">#F4F6FA</color>
+    <color name="text_secondary">#AEB5C4</color>
+    <color name="text_muted">#7F8797</color>
+
+    <color name="accent_primary">#6366F1</color>
+    <color name="accent_hover">#7577F5</color>
+    <color name="accent_active">#5154D9</color>
+    <color name="accent_subtle">#266366F1</color>
+
+    <color name="success">#22C55E</color>
+    <color name="success_dark">#1A9E4A</color>
+    <color name="warning">#F59E0B</color>
+    <color name="danger">#EF4444</color>
+    <color name="danger_dark">#C93A3A</color>
 
 
+    <color name="primary">#6366F1</color>
+    <color name="primary_dark">#5154D9</color>
+    <color name="background_soft">#0F1117</color>
+    <color name="card_bg">#1B1F2A</color>
+    <color name="text_main">#F4F6FA</color>
+    <color name="divider_light">#2A3040</color>
+
+    <color name="btn_disabled_bg">#2A3040</color>
+    <color name="btn_disabled_text">#7F8797</color>
+
+    <color name="status_open">#6366F1</color>
+    <color name="status_delivered">#22C55E</color>
+
+    <color name="list_divider">#2A3040</color>
+    <color name="list_selector">#33222735</color>
 </resources>

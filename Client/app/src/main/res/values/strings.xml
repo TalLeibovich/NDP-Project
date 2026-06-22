@@ -1,5 +1,5 @@
 <resources>
-        <string name="app_name">FinalProject</string>
+        <string name="app_name">זמן חסכן</string>
 
         <string name="splash_title">NDP Route Optimizer</string>
         <string name="checking_server">Checking server...</string>
@@ -54,6 +54,9 @@
         <string name="failed_to_load_packages">Failed to load packages</string>
         <string name="failed_to_parse_packages">Failed to parse packages</string>
         <string name="open_packages_count">Open packages: %1$d</string>
+        <string name="all_packages_count">ALL PACKAGES: %1$d</string>
+        <string name="open_packages_count_title">OPEN PACKAGES: %1$d</string>
+        <string name="delivered_packages_count">DELIVERED PACKAGES: %1$d</string>
 
         <string name="package_id_hint">Package ID (e.g. P100)</string>
         <string name="address_hint">Address</string>
@@ -130,7 +133,6 @@
         <string name="not_started">NOT_STARTED</string>
 
 
-
         <string name="manager">Manager</string>
 
         <string name="open_route_map">Open Route Map</string>
@@ -156,13 +158,12 @@
         <string name="complete_route_release">Complete Route (Release Run)</string>
 
 
-
         <string name="optimize_no_selection">No packages selected. Either packages are locked by another courier OR your constraints are too strict (try increasing Max Distance / Max Stops).</string>
         <string name="assign_to_courier">Assign to Courier</string>
 
         <string name="continue_last_route">Continue Last Route</string>
 
         <string name="release_run">Release Run (Unlock Packages)</string>
-        <!-- Google Maps key -->
+
         <string name="google_maps_key">AIzaSyB7NmQZO3orcNsPKdr8QaXvHNes9mlWf2I</string>
 </resources>

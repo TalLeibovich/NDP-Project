@@ -2,37 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_soft"
+    android:background="@color/app_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/screen_padding">
 
     <Button
         android:id="@+id/btnBackDeliveryMode"
-        style="@style/Btn.Primary"
+        style="@style/Btn.Secondary"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <ImageView
         android:id="@+id/imgLogoDelivery"
         android:layout_width="200dp"
         android:layout_height="110dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/spacing_md"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
         android:src="@drawable/delivery_logo" />
 
     <TextView
         android:id="@+id/tvDeliveryHeader"
+        style="@style/App.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delivery Mode"
-        android:textColor="@color/text_main"
-        android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <Button
         android:id="@+id/btnNextStop"
@@ -40,20 +39,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/next_stop"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
-    <!-- NEW: Complete route (release run on server) -->
     <Button
         android:id="@+id/btnCompleteRoute"
         style="@style/Btn.Danger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/complete_route_release"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <ListView
         android:id="@+id/listViewDeliveryStops"
+        style="@style/App.ListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent"/>
 </LinearLayout>

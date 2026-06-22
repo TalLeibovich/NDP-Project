@@ -2,7 +2,6 @@ package com.example.ndpclient;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -27,19 +26,18 @@ public class PackagesListActivity extends AppCompatActivity {
     private Button btnAddPackage;
     private ListView listViewPackages;
 
-    // ✅ Filters
     private CheckBox cbFilterAll;
     private CheckBox cbFilterOpen;
     private CheckBox cbFilterDelivered;
 
-    // -1 = ALL, 0 = OPEN (delivered=0), 1 = DELIVERED (delivered=1)
-    private int deliveredFilter = 0; // default OPEN
+    private int deliveredFilter = 0;
     private boolean suppressFilterEvents = false;
 
     private SessionManager sessionManager;
     private final List<PackageItem> packages = new ArrayList<>();
-    private ArrayAdapter<PackageItem> adapter;
+    private PackageListAdapter adapter;
 
+    // Initializes the package list screen and loads company packages.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +56,7 @@ public class PackagesListActivity extends AppCompatActivity {
         cbFilterOpen = findViewById(R.id.cbFilterOpen);
         cbFilterDelivered = findViewById(R.id.cbFilterDelivered);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, packages);
+        adapter = new PackageListAdapter(this, packages);
         listViewPackages.setAdapter(adapter);
 
         String companyName = sessionManager.getCompanyName();
@@ -89,6 +87,8 @@ public class PackagesListActivity extends AppCompatActivity {
             intent.putExtra("deadline", item.getDeadline());
             intent.putExtra("lat", String.valueOf(item.getLat()));
             intent.putExtra("lon", String.valueOf(item.getLon()));
+            intent.putExtra("address", item.getAddress());
+            intent.putExtra("formatted_address", item.getFormattedAddress());
             startActivity(intent);
         });
 
@@ -97,14 +97,15 @@ public class PackagesListActivity extends AppCompatActivity {
         loadPackages();
     }
 
+    // Reloads packages when returning from add or edit screens.
     @Override
     protected void onResume() {
         super.onResume();
         loadPackages();
     }
 
+    // Configures package status filters as mutually exclusive checkboxes.
     private void setupFilterCheckboxes() {
-        // default: OPEN
         suppressFilterEvents = true;
         cbFilterAll.setChecked(false);
         cbFilterOpen.setChecked(true);
@@ -143,6 +144,20 @@ public class PackagesListActivity extends AppCompatActivity {
         cbFilterDelivered.setOnCheckedChangeListener(listener);
     }
 
+    // Updates the title according to the active package filter.
+    private void updatePackageCountTitle() {
+        int count = packages.size();
+
+        if (deliveredFilter == -1) {
+            tvPackagesStatus.setText(getString(R.string.all_packages_count, count));
+        } else if (deliveredFilter == 0) {
+            tvPackagesStatus.setText(getString(R.string.open_packages_count_title, count));
+        } else {
+            tvPackagesStatus.setText(getString(R.string.delivered_packages_count, count));
+        }
+    }
+
+    // Loads company packages from the API using the selected delivery filter.
     private void loadPackages() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null) {
@@ -155,7 +170,6 @@ public class PackagesListActivity extends AppCompatActivity {
         try {
             String path = "/packages?company_id=" + URLEncoder.encode(companyId, "UTF-8");
 
-            // ✅ apply filter only if not ALL
             if (deliveredFilter == 0) path += "&delivered=0";
             else if (deliveredFilter == 1) path += "&delivered=1";
 
@@ -180,8 +194,12 @@ public class PackagesListActivity extends AppCompatActivity {
                                 String deadline = obj.optString("deadline", "");
                                 int delivered = obj.optInt("delivered", 0);
 
+                                String address = readAddress(obj);
+                                String formattedAddress = readFormattedAddress(obj);
+
                                 packages.add(new PackageItem(
-                                        id, cId, lat, lon, weight, volume, profit, deadline, delivered
+                                        id, cId, lat, lon, weight, volume, profit,
+                                        deadline, delivered, address, formattedAddress
                                 ));
                             }
 
@@ -190,8 +208,7 @@ public class PackagesListActivity extends AppCompatActivity {
                             if (packages.isEmpty()) {
                                 tvPackagesStatus.setText(R.string.no_packages_found);
                             } else {
-                                // אם יש לך string מתאים לכל מצב - אפשר לשפר. כרגע נשאיר את מה שיש:
-                                tvPackagesStatus.setText(getString(R.string.open_packages_count, packages.size()));
+                                updatePackageCountTitle();
                             }
 
                         } catch (Exception e) {
@@ -209,5 +226,27 @@ public class PackagesListActivity extends AppCompatActivity {
         } catch (Exception e) {
             tvPackagesStatus.setText(R.string.failed_to_load_packages);
         }
+    }
+
+    // Reads the package address using supported response field names.
+    private String readAddress(JSONObject obj) {
+        String address = obj.optString("address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        address = obj.optString("Address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        return null;
+    }
+
+    // Reads the formatted package address using supported response field names.
+    private String readFormattedAddress(JSONObject obj) {
+        String formatted = obj.optString("formatted_address", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        formatted = obj.optString("FormattedAddress", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        return null;
     }
 }

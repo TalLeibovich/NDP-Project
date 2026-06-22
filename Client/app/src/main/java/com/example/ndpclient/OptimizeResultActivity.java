@@ -36,6 +36,7 @@ public class OptimizeResultActivity extends AppCompatActivity {
 
     private boolean assignInFlight = false;
 
+    // Initializes the optimization result screen and connects route actions.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +65,6 @@ public class OptimizeResultActivity extends AppCompatActivity {
             loadAndRender();
         });
 
-        // ❗ Delivery Mode ייפתח רק אם יש Assigned (לא Draft)
         btnStartDeliveryMode.setOnClickListener(v -> {
             String companyId = sessionManager.getCompanyId();
             String courierId = sessionManager.getCourierId();
@@ -90,13 +90,13 @@ public class OptimizeResultActivity extends AppCompatActivity {
         loadAndRender();
     }
 
+    // Activates the server run and assigns the draft route to the courier.
     private void activateRunLock() {
         if (assignInFlight) return;
 
         String companyId = sessionManager.getCompanyId();
         String courierId = sessionManager.getCourierId();
 
-        // אנחנו נועלים רק על Draft (תוצאה של Optimize)
         String draftJson = resultStore.getDraft(companyId, courierId);
         if (draftJson == null || draftJson.trim().isEmpty()) {
             Toast.makeText(this, "No optimization draft found. Run optimization first.", Toast.LENGTH_SHORT).show();
@@ -116,7 +116,6 @@ public class OptimizeResultActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String json) {
                 runOnUiThread(() -> {
-                    // ✅ אחרי assign: draft -> assigned
                     resultStore.saveAssigned(companyId, courierId, draftJson);
                     resultStore.clearDraft(companyId, courierId);
 
@@ -150,11 +149,11 @@ public class OptimizeResultActivity extends AppCompatActivity {
         });
     }
 
+    // Loads the best available optimization result and renders the route summary.
     private void loadAndRender() {
         String companyId = sessionManager.getCompanyId();
         String courierId = sessionManager.getCourierId();
 
-        // מציגים Draft אם קיים, אחרת Assigned (לצפייה)
         String json = resultStore.getDraft(companyId, courierId);
         boolean showingDraft = true;
 
@@ -206,7 +205,31 @@ public class OptimizeResultActivity extends AppCompatActivity {
 
             tvOptimizeSummary.setText(summary);
 
-            lastStops = RouteOrderParser.parseOrderedStops(obj, "OptimizeResult");
+            lastStops = new ArrayList<>();
+            if (routeStopsArr != null) {
+                for (int i = 0; i < routeStopsArr.length(); i++) {
+                    JSONObject s = routeStopsArr.getJSONObject(i);
+
+                    int seq = s.optInt("seq", i);
+                    String type = s.optString("type", "");
+                    double lat = s.optDouble("lat", 0.0);
+                    double lon = s.optDouble("lon", 0.0);
+                    String packageId = s.optString("package_id", null);
+
+                    String address = readAddress(s);
+
+                    double legKm = s.optDouble("leg_km", 0.0);
+                    double cumKm = s.optDouble("cum_km", 0.0);
+                    double cumWeight = s.optDouble("cum_weight", 0.0);
+                    double cumVolume = s.optDouble("cum_volume", 0.0);
+                    double cumProfit = s.optDouble("cum_profit", 0.0);
+
+                    if (packageId != null && packageId.trim().isEmpty()) packageId = null;
+
+                    lastStops.add(new RouteStop(seq, type, lat, lon, packageId, address,
+                            legKm, cumKm, cumWeight, cumVolume, cumProfit));
+                }
+            }
 
             RouteStopsAdapter adapter = new RouteStopsAdapter(this, lastStops, companyId);
             listViewRouteStops.setAdapter(adapter);
@@ -214,7 +237,6 @@ public class OptimizeResultActivity extends AppCompatActivity {
             boolean hasRoute = !lastStops.isEmpty();
             boolean canAssign = showingDraft && hasRoute && lastRunId != null && !lastRunId.trim().isEmpty() && !"null".equalsIgnoreCase(lastRunId);
 
-            // Delivery/Map רק אם ASSIGNED
             boolean hasAssigned = resultStore.hasAssigned(companyId, courierId);
             btnStartDeliveryMode.setEnabled(hasAssigned);
             btnOpenRouteMap.setEnabled(hasAssigned);
@@ -232,5 +254,22 @@ public class OptimizeResultActivity extends AppCompatActivity {
             btnResetLocalStatuses.setEnabled(false);
             btnAssignToCourier.setEnabled(false);
         }
+    }
+
+    // Reads a stop address using the supported response field names.
+    private String readAddress(JSONObject obj) {
+        String formatted = obj.optString("formatted_address", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        formatted = obj.optString("FormattedAddress", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        String address = obj.optString("address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        address = obj.optString("Address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        return null;
     }
 }

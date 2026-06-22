@@ -16,13 +16,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "SPLASH";
 
-    private ProgressBar progressSplash;     // ✅ matches activity_splash.xml
-    private TextView tvSplashStatus;        // ✅ matches activity_splash.xml
-    private Button btnRetry;                // ✅ matches activity_splash.xml
+    private ProgressBar progressSplash;
+    private TextView tvSplashStatus;
+    private Button btnRetry;
 
     private SessionManager sessionManager;
     private OptimizeResultStore optimizeResultStore;
 
+    // Initializes the splash screen and starts the server availability check.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         checkServer();
     }
 
+    // Checks whether the backend server is available before opening the app flow.
     private void checkServer() {
         progressSplash.setVisibility(View.VISIBLE);
         btnRetry.setVisibility(View.GONE);
@@ -53,7 +55,6 @@ public class SplashActivity extends AppCompatActivity {
 
                     JSONObject obj = tryParseJson(raw);
                     if (obj == null) {
-                        // try to extract JSON from noisy response
                         obj = tryParseJson(extractFirstJsonObject(raw));
                     }
 
@@ -68,7 +69,6 @@ public class SplashActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // OK -> route to next screen
                     Intent next = resolveNextScreen();
                     next.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(next);
@@ -86,13 +86,12 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    // Resolves the next screen according to the saved session state.
     private Intent resolveNextScreen() {
-        // If you use the flow: Company -> Role -> Login
         if (!sessionManager.hasCompany()) {
             return new Intent(this, CompanySelectionActivity.class);
         }
 
-        // if no role yet
         if (!sessionManager.hasRole()) {
             return new Intent(this, RoleSelectionActivity.class);
         }
@@ -106,16 +105,17 @@ public class SplashActivity extends AppCompatActivity {
             return new Intent(this, CourierHomeActivity.class);
         }
 
-        // manager
         return new Intent(this, MainActivity.class);
     }
 
+    // Displays a server or parsing error on the splash screen.
     private void showError(String msg) {
         progressSplash.setVisibility(View.GONE);
         btnRetry.setVisibility(View.VISIBLE);
         tvSplashStatus.setText(msg);
     }
 
+    // Attempts to parse a string as a JSON object.
     private JSONObject tryParseJson(String s) {
         if (s == null) return null;
         try {
@@ -125,6 +125,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    // Extracts the first JSON object from a noisy response string.
     private String extractFirstJsonObject(String s) {
         if (s == null) return null;
         int start = s.indexOf('{');

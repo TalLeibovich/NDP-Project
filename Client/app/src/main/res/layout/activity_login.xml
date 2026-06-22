@@ -2,58 +2,65 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/screen_padding">
 
     <Button
         android:id="@+id/btnBackLogin"
+        style="@style/Btn.Secondary"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <TextView
         android:id="@+id/tvLoginTitle"
-        android:layout_width="wrap_content"
+        style="@style/App.Title.Large"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <TextView
         android:id="@+id/tvLoginStatus"
-        android:layout_width="wrap_content"
+        style="@style/App.Status"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <EditText
         android:id="@+id/etUsername"
+        style="@style/App.Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Company"
         android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <EditText
         android:id="@+id/etPassword"
+        style="@style/App.Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <Button
         android:id="@+id/btnLogin"
+        style="@style/Btn.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <ListView
         android:id="@+id/listViewCouriers"
+        style="@style/App.ListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent"/>
 </LinearLayout>

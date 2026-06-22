@@ -31,6 +31,7 @@ public class CourierSelectionActivity extends AppCompatActivity {
     private final List<Courier> couriers = new ArrayList<>();
     private ArrayAdapter<Courier> adapter;
 
+    // Initializes the courier selection screen and loads couriers for the selected company.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,6 @@ public class CourierSelectionActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
-        // Guard: חייב חברה
         if (!sessionManager.hasCompany()) {
             finish();
             return;
@@ -53,14 +53,13 @@ public class CourierSelectionActivity extends AppCompatActivity {
         etCourierId = findViewById(R.id.etCourierId);
         etCourierName = findViewById(R.id.etCourierName);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, couriers);
+        adapter = new ArrayAdapter<>(this, R.layout.item_list_row, couriers);
         listViewCouriers.setAdapter(adapter);
 
         String companyName = sessionManager.getCompanyName();
         if (companyName == null) companyName = "Unknown company";
         tvSelectedCompany.setText(getString(R.string.selected_company_prefix, companyName));
 
-        // Back -> חוזר ל-Main (לא CompanySelection)
         btnBackCourier.setOnClickListener(v -> finish());
 
         btnLoadCouriers.setOnClickListener(v -> loadCouriers());
@@ -76,6 +75,7 @@ public class CourierSelectionActivity extends AppCompatActivity {
         loadCouriers();
     }
 
+    // Loads the couriers that belong to the selected company.
     private void loadCouriers() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null) {
@@ -131,6 +131,7 @@ public class CourierSelectionActivity extends AppCompatActivity {
         }
     }
 
+    // Creates a new courier for the selected company.
     private void addCourier() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null) {
@@ -176,6 +177,7 @@ public class CourierSelectionActivity extends AppCompatActivity {
         }
     }
 
+    // Returns to the previous screen.
     @Override
     public void onBackPressed() {
         finish();

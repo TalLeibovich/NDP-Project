@@ -29,12 +29,15 @@ public class CompanyLoginActivity extends AppCompatActivity {
     private static class CompanyItem {
         String companyId;
         String name;
+
+        // Stores a company option used during login validation.
         CompanyItem(String companyId, String name) {
             this.companyId = companyId;
             this.name = name;
         }
     }
 
+    // Initializes the company login screen and checks for an existing company session.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +52,6 @@ public class CompanyLoginActivity extends AppCompatActivity {
         btnLoadCompaniesForLogin = findViewById(R.id.btnLoadCompaniesForLogin);
         btnLoginCompany = findViewById(R.id.btnLoginCompany);
 
-        // אם כבר יש חברה שמורה – דלג למסך הראשי
         if (sessionManager.hasCompany()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -60,6 +62,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
         btnLoginCompany.setOnClickListener(v -> attemptLogin());
     }
 
+    // Loads the available companies from the API.
     private void loadCompanies() {
         tvLoginStatus.setText(getString(R.string.loading_companies));
         btnLoadCompaniesForLogin.setEnabled(false);
@@ -83,6 +86,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
         });
     }
 
+    // Parses the companies response and updates the preview list.
     private void parseCompanies(String json) {
         companies.clear();
         try {
@@ -104,6 +108,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the entered company credentials and opens the main screen.
     private void attemptLogin() {
         String username = etCompanyName.getText().toString().trim();
         String password = etCompanyId.getText().toString().trim();
@@ -113,7 +118,6 @@ public class CompanyLoginActivity extends AppCompatActivity {
             return;
         }
 
-        // אם עוד לא טענו חברות – נטען אוטומטית ואז ננסה שוב
         if (companies.isEmpty()) {
             loadCompanies();
             tvLoginStatus.setText(getString(R.string.company_login_load_first));

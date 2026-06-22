@@ -3,70 +3,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@color/background_soft">
+    android:background="@color/app_background"
+    android:padding="@dimen/screen_padding">
 
     <Button
         android:id="@+id/btnBackPackages"
-        style="@style/Btn.Primary"
+        style="@style/Btn.Secondary"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:text="@string/back"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <TextView
         android:id="@+id/tvPackagesTitle"
-        android:layout_width="wrap_content"
+        style="@style/App.Title.Large"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/packages_title"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_main"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <TextView
         android:id="@+id/tvPackagesCompany"
-        android:layout_width="wrap_content"
+        style="@style/App.Subtitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/no_company_selected"
-        android:textColor="@color/text_secondary"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="@dimen/spacing_sm" />
 
     <TextView
         android:id="@+id/tvPackagesStatus"
-        android:layout_width="wrap_content"
+        style="@style/App.CountTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/loading_packages"
-        android:textColor="@color/text_secondary"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
-    <!-- ✅ Filters (checkboxes) -->
     <LinearLayout
         android:id="@+id/layoutPackageFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
+        android:background="@drawable/filter_segment_group"
+        android:padding="@dimen/spacing_xs"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_lg">
 
         <CheckBox
             android:id="@+id/cbFilterAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All"
-            android:layout_marginEnd="16dp"/>
+            style="@style/App.FilterSegment"
+            android:text="All" />
 
         <CheckBox
             android:id="@+id/cbFilterOpen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Open"
-            android:layout_marginEnd="16dp"/>
+            style="@style/App.FilterSegment"
+            android:text="Open" />
 
         <CheckBox
             android:id="@+id/cbFilterDelivered"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delivered"/>
+            style="@style/App.FilterSegment"
+            android:text="Delivered" />
     </LinearLayout>
 
     <Button
@@ -75,7 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/load_packages"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <Button
         android:id="@+id/btnAddPackage"
@@ -83,12 +79,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_package"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <ListView
         android:id="@+id/listViewPackages"
+        style="@style/App.ListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent" />
 
 </LinearLayout>

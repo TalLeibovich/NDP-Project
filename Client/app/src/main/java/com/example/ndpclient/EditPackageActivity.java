@@ -32,6 +32,7 @@ public class EditPackageActivity extends AppCompatActivity {
     private Double currentLat = null;
     private Double currentLon = null;
 
+    // Initializes the edit-package screen and loads the selected package data.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,7 @@ public class EditPackageActivity extends AppCompatActivity {
         btnSaveChanges.setOnClickListener(v -> saveChanges());
     }
 
+    // Converts the entered address into latitude and longitude using the geocoding API.
     private void geocodeAddress() {
         String address = etEditAddress.getText().toString().trim();
         if (address.isEmpty()) {
@@ -132,6 +134,7 @@ public class EditPackageActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the edited package form and sends the updated package data to the server.
     private void saveChanges() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null) {

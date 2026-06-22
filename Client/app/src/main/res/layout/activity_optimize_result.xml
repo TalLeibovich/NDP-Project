@@ -3,34 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@color/background_soft">
+    android:background="@color/app_background"
+    android:padding="@dimen/screen_padding">
 
     <Button
         android:id="@+id/btnBackOptimizeResult"
-        style="@style/Btn.Primary"
+        style="@style/Btn.Secondary"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <TextView
         android:id="@+id/tvRouteReadyTitle"
-        android:layout_width="wrap_content"
+        style="@style/App.Title.Large"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/route_ready"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_main"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <TextView
         android:id="@+id/tvOptimizeSummary"
+        style="@style/App.Status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/no_optimize_result"
-        android:textColor="@color/text_secondary"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <Button
         android:id="@+id/btnAssignToCourier"
@@ -38,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/assign_to_courier"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <Button
         android:id="@+id/btnStartDeliveryMode"
@@ -46,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_delivery_mode"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <Button
         android:id="@+id/btnOpenRouteMap"
@@ -54,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/open_route_map"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <Button
         android:id="@+id/btnResetLocalStatuses"
@@ -62,12 +60,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/reset_local_statuses"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <ListView
         android:id="@+id/listViewRouteStops"
+        style="@style/App.ListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent" />
 
 </LinearLayout>

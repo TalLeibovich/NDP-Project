@@ -29,6 +29,7 @@ public class AddPackageActivity extends AppCompatActivity {
     private Double currentLat = null;
     private Double currentLon = null;
 
+    // Initializes the add-package screen and connects all UI actions.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class AddPackageActivity extends AppCompatActivity {
         btnSavePackage.setOnClickListener(v -> savePackage());
     }
 
+    // Converts the entered address into latitude and longitude using the geocoding API.
     private void geocodeAddress() {
         String address = etAddress.getText().toString().trim();
         if (address.isEmpty()) {
@@ -102,6 +104,7 @@ public class AddPackageActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the package form and sends the package data to the server.
     private void savePackage() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null) {

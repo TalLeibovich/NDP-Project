@@ -2,56 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/screen_padding">
 
     <TextView
-        android:layout_width="wrap_content"
+        style="@style/App.Title.Large"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/company_login_title"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <TextView
         android:id="@+id/tvLoginStatus"
-        android:layout_width="wrap_content"
+        style="@style/App.Subtitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/company_login_hint"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <EditText
         android:id="@+id/etCompanyName"
+        style="@style/App.Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/company_username_hint"
         android:inputType="text"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <EditText
         android:id="@+id/etCompanyId"
+        style="@style/App.Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/company_password_hint"
         android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <Button
         android:id="@+id/btnLoadCompaniesForLogin"
+        style="@style/Btn.Secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/load_companies"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_md"/>
 
     <Button
         android:id="@+id/btnLoginCompany"
+        style="@style/Btn.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/spacing_lg"/>
 
     <TextView
         android:id="@+id/tvCompaniesPreview"
+        style="@style/App.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""

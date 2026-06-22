@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private final List<String> couriersDisplay = new ArrayList<>();
     private ArrayAdapter<String> courierAdapter;
 
+    // Initializes the login screen according to the selected role.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +55,10 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         listViewCouriers = findViewById(R.id.listViewCouriers);
 
-        // Username fixed = company name
         etUsername.setText(sessionManager.getCompanyName());
         etUsername.setEnabled(false);
 
-        courierAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, couriersDisplay);
+        courierAdapter = new ArrayAdapter<>(this, R.layout.item_list_row, couriersDisplay);
         listViewCouriers.setAdapter(courierAdapter);
 
         btnBack.setOnClickListener(v -> {
@@ -87,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> attemptLogin());
     }
 
+    // Loads couriers for the selected company when logging in as a courier.
     private void loadCouriersForCompany() {
         try {
             String companyId = sessionManager.getCompanyId();
@@ -108,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Parses the courier list response and updates the selection list.
     private void parseCouriers(String json) {
         couriers.clear();
         couriersDisplay.clear();
@@ -128,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the entered credentials and opens the matching dashboard.
     private void attemptLogin() {
         String password = etPassword.getText().toString().trim();
         if (password.isEmpty()) {
@@ -137,12 +140,11 @@ public class LoginActivity extends AppCompatActivity {
 
         String role = sessionManager.getRole();
         if ("manager".equalsIgnoreCase(role)) {
-            // verify company id
             if (!password.equals(sessionManager.getCompanyId())) {
                 tvStatus.setText(getString(R.string.company_login_invalid));
                 return;
             }
-            // manager dashboard
+
             Intent i = new Intent(this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
@@ -150,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // courier: verify courier id exists
         String foundName = null;
         for (Courier c : couriers) {
             if (password.equals(c.getCourierId())) {
@@ -171,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    // Returns to the role selection screen.
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, RoleSelectionActivity.class));

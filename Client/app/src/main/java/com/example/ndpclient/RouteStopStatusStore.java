@@ -15,21 +15,23 @@ public class RouteStopStatusStore {
     private static final String PREFS_NAME = "route_stop_status_prefs";
     private final SharedPreferences prefs;
 
+    // Initializes local storage for route stop statuses.
     public RouteStopStatusStore(Context context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
+    // Builds the storage key for a package status within a company.
     private String keyFor(String companyId, String packageId) {
         String c = (companyId == null || companyId.trim().isEmpty()) ? "no_company" : companyId.trim();
         String p = (packageId == null || packageId.trim().isEmpty()) ? "unknown_pkg" : packageId.trim();
         return c + "::" + p;
     }
 
+    // Returns the saved status for a package.
     public Status getStatus(String companyId, String packageId) {
         String key = keyFor(companyId, packageId);
         String val = prefs.getString(key, Status.PENDING.name());
 
-        // תאימות לאחור אם נשמר "NOT_STARTED" מהגרסה הקודמת
         if ("NOT_STARTED".equals(val)) return Status.PENDING;
 
         try {
@@ -39,11 +41,13 @@ public class RouteStopStatusStore {
         }
     }
 
+    // Saves the status for a package.
     public void setStatus(String companyId, String packageId, Status status) {
         String key = keyFor(companyId, packageId);
         prefs.edit().putString(key, status.name()).apply();
     }
 
+    // Clears all saved package statuses for a company.
     public void clearCompany(String companyId) {
         String c = (companyId == null || companyId.trim().isEmpty()) ? "no_company" : companyId.trim();
         String prefix = c + "::";

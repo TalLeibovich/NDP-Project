@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -30,8 +27,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RouteMapActivity extends AppCompatActivity {
@@ -46,20 +44,16 @@ public class RouteMapActivity extends AppCompatActivity {
     private RouteStopStatusStore statusStore;
 
     private final List<RouteStop> stops = new ArrayList<>();
-    private final List<Marker> labelMarkers = new ArrayList<>();
-    private final List<Marker> dotMarkers = new ArrayList<>();
-    private final Map<Integer, com.google.android.gms.maps.model.Polyline> leaderLines = new HashMap<>();
 
     private String companyId;
     private String courierId;
 
-    // palette
     private static final int COLOR_GRAY = Color.rgb(158, 158, 158);
     private static final int COLOR_GREEN = Color.rgb(46, 173, 98);
     private static final int COLOR_RED = Color.rgb(214, 69, 69);
     private static final int COLOR_BLUE = Color.rgb(30, 136, 229);
-    private static final int COLOR_LINE = Color.argb(200, 0, 0, 0);
 
+    // Initializes the route map screen and loads the assigned route.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,26 +88,17 @@ public class RouteMapActivity extends AppCompatActivity {
             }
 
             loadStopsFromAssigned();
+
             if (stops.isEmpty()) {
                 Toast.makeText(this, "No assigned route to display.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            RouteOrderParser.logStopList("polylineStops", stops, "RouteMap");
-
-            // Clicking a label opens details like a marker
-            map.setOnMarkerClickListener(marker -> {
-                marker.showInfoWindow();
-                return true;
-            });
-
             renderRouteOnMap();
-
-            // When zoom/pan changes, recompute label offsets in screen pixels
-            map.setOnCameraIdleListener(this::updateLeaderLabelsPositions);
         });
     }
 
+    // Loads assigned route stops from local storage.
     private void loadStopsFromAssigned() {
         stops.clear();
 
@@ -122,19 +107,64 @@ public class RouteMapActivity extends AppCompatActivity {
 
         try {
             JSONObject obj = new JSONObject(json);
-            stops.clear();
-            stops.addAll(RouteOrderParser.parseOrderedStops(obj, "RouteMap"));
-            RouteOrderParser.logStopList("mapStops", stops, "RouteMap");
-        } catch (Exception ignored) {}
+            JSONArray routeStopsArr = obj.optJSONArray("route_stops");
+            if (routeStopsArr == null) return;
+
+            for (int i = 0; i < routeStopsArr.length(); i++) {
+                JSONObject s = routeStopsArr.getJSONObject(i);
+
+                int seq = s.optInt("seq", i);
+                String type = s.optString("type", "");
+                double lat = s.optDouble("lat", 0.0);
+                double lon = s.optDouble("lon", 0.0);
+                String packageId = s.optString("package_id", null);
+                String address = readAddress(s);
+
+                double legKm = s.optDouble("leg_km", 0.0);
+                double cumKm = s.optDouble("cum_km", 0.0);
+                double cumWeight = s.optDouble("cum_weight", 0.0);
+                double cumVolume = s.optDouble("cum_volume", 0.0);
+                double cumProfit = s.optDouble("cum_profit", 0.0);
+
+                if (packageId != null && packageId.trim().isEmpty()) packageId = null;
+
+                stops.add(new RouteStop(
+                        seq, type, lat, lon, packageId, address,
+                        legKm, cumKm, cumWeight, cumVolume, cumProfit
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    // Reads a stop address using supported response field names.
+    private String readAddress(JSONObject obj) {
+        String formatted = obj.optString("formatted_address", null);
+        if (isValid(formatted)) return formatted;
+
+        formatted = obj.optString("FormattedAddress", null);
+        if (isValid(formatted)) return formatted;
+
+        String address = obj.optString("address", null);
+        if (isValid(address)) return address;
+
+        address = obj.optString("Address", null);
+        if (isValid(address)) return address;
+
+        return null;
+    }
+
+    // Checks whether a string contains meaningful content.
+    private boolean isValid(String s) {
+        return s != null && !s.trim().isEmpty() && !"null".equalsIgnoreCase(s.trim());
+    }
+
+    // Renders the full assigned route on the Google map.
     private void renderRouteOnMap() {
         map.clear();
-        labelMarkers.clear();
-        dotMarkers.clear();
-        leaderLines.clear();
 
-        // route polyline (real order)
         PolylineOptions routeLine = new PolylineOptions()
                 .width(6f)
                 .color(Color.BLACK);
@@ -142,148 +172,209 @@ public class RouteMapActivity extends AppCompatActivity {
         LatLngBounds.Builder bounds = new LatLngBounds.Builder();
         boolean hasAny = false;
 
-        for (RouteStop s : stops) {
-            LatLng pos = new LatLng(s.getLat(), s.getLon());
+        for (RouteStop stop : stops) {
+            LatLng pos = new LatLng(stop.getLat(), stop.getLon());
             routeLine.add(pos);
             bounds.include(pos);
             hasAny = true;
         }
+
         map.addPolyline(routeLine);
+
+        Map<String, List<RouteStop>> groups = groupStopsByLocation();
+
+        for (List<RouteStop> group : groups.values()) {
+            if (group.isEmpty()) continue;
+
+            RouteStop first = group.get(0);
+            LatLng pos = new LatLng(first.getLat(), first.getLon());
+
+            String label = buildGroupLabel(group);
+            int color = resolveGroupColor(group);
+
+            map.addMarker(new MarkerOptions()
+                    .position(pos)
+                    .icon(createCircleLabelIcon(label, color))
+                    .anchor(0.5f, 0.5f)
+                    .title(buildGroupTitle(group))
+                    .snippet(buildGroupSnippet(group)));
+        }
 
         if (hasAny) {
             try {
-                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 120));
+                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 140));
             } catch (Exception e) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(stops.get(0).getLat(), stops.get(0).getLon()), 12f));
+                        new LatLng(stops.get(0).getLat(), stops.get(0).getLon()), 11f));
+            }
+        }
+    }
+
+    // Groups route stops that share the same coordinates.
+    private Map<String, List<RouteStop>> groupStopsByLocation() {
+        Map<String, List<RouteStop>> groups = new LinkedHashMap<>();
+
+        for (RouteStop stop : stops) {
+            String key = locationKey(stop);
+            if (!groups.containsKey(key)) {
+                groups.put(key, new ArrayList<>());
+            }
+            groups.get(key).add(stop);
+        }
+
+        return groups;
+    }
+
+    // Builds a stable grouping key from stop coordinates.
+    private String locationKey(RouteStop stop) {
+        return String.format(Locale.US, "%.6f,%.6f", stop.getLat(), stop.getLon());
+    }
+
+    // Builds the marker label for one or more stops at the same location.
+    private String buildGroupLabel(List<RouteStop> group) {
+        if (group.size() == 1) {
+            return String.valueOf(group.get(0).getSeq());
+        }
+
+        int min = group.get(0).getSeq();
+        int max = group.get(0).getSeq();
+
+        for (RouteStop stop : group) {
+            min = Math.min(min, stop.getSeq());
+            max = Math.max(max, stop.getSeq());
+        }
+
+        boolean contiguous = (max - min + 1 == group.size());
+
+        if (contiguous) {
+            return min + "-" + max;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < group.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(group.get(i).getSeq());
+        }
+        return sb.toString();
+    }
+
+    // Resolves the marker color according to route progress and delivery status.
+    private int resolveGroupColor(List<RouteStop> group) {
+        for (RouteStop stop : group) {
+            if (stop.getSeq() == 0) return COLOR_BLUE;
+        }
+
+        int currentSeq = progressStore.getCurrentSeq(companyId);
+        for (RouteStop stop : group) {
+            if (stop.getSeq() == currentSeq) return COLOR_BLUE;
+        }
+
+        boolean hasFailed = false;
+        boolean allDelivered = true;
+
+        for (RouteStop stop : group) {
+            if (stop.getPackageId() == null) {
+                allDelivered = false;
+                continue;
+            }
+
+            RouteStopStatusStore.Status st = statusStore.getStatus(companyId, stop.getPackageId());
+
+            if (st == RouteStopStatusStore.Status.FAILED) {
+                hasFailed = true;
+            }
+
+            if (st != RouteStopStatusStore.Status.DELIVERED) {
+                allDelivered = false;
             }
         }
 
-        // Create markers AFTER camera is set (so projection exists nicely)
-        createDotAndLabelMarkers();
-        updateLeaderLabelsPositions();
-    }
+        if (hasFailed) return COLOR_RED;
+        if (allDelivered) return COLOR_GREEN;
 
-    private void createDotAndLabelMarkers() {
-        int currentSeq = progressStore.getCurrentSeq(companyId);
-
-        for (RouteStop s : stops) {
-            LatLng truePos = new LatLng(s.getLat(), s.getLon());
-
-            int color = resolveColor(s, currentSeq);
-
-            // 1) Dot marker (real location)
-            Marker dot = map.addMarker(new MarkerOptions()
-                    .position(truePos)
-                    .icon(createDotIcon(color))
-                    .anchor(0.5f, 0.5f)
-                    .zIndex(5f)
-                    .title(buildTitle(s))
-                    .snippet(buildSnippet(s)));
-            if (dot != null) dotMarkers.add(dot);
-
-            // 2) Label marker (will be repositioned by projection later)
-            Marker label = map.addMarker(new MarkerOptions()
-                    .position(truePos) // temporary, will be moved
-                    .icon(createLabelIcon(s.getSeq(), color))
-                    .anchor(0.5f, 1.0f)
-                    .zIndex(10f)
-                    .title(buildTitle(s))
-                    .snippet(buildSnippet(s)));
-            if (label != null) labelMarkers.add(label);
-        }
-    }
-
-    /**
-     * Repositions numeric labels in screen pixels so they don't overlap,
-     * and draws a leader line from the real dot to the numeric label.
-     */
-    private void updateLeaderLabelsPositions() {
-        if (map == null) return;
-        if (dotMarkers.size() != labelMarkers.size()) return;
-
-        // Remove old leader lines
-        for (com.google.android.gms.maps.model.Polyline pl : leaderLines.values()) {
-            if (pl != null) pl.remove();
-        }
-        leaderLines.clear();
-
-        for (int i = 0; i < dotMarkers.size(); i++) {
-            Marker dot = dotMarkers.get(i);
-            Marker label = labelMarkers.get(i);
-
-            LatLng truePos = dot.getPosition();
-
-            // Convert to screen, apply pixel offset pattern (spiral-ish)
-            Point p = map.getProjection().toScreenLocation(truePos);
-            Point off = offsetForIndex(i);
-
-            Point p2 = new Point(p.x + off.x, p.y + off.y);
-            LatLng labelPos = map.getProjection().fromScreenLocation(p2);
-
-            label.setPosition(labelPos);
-
-            // Leader line (dot -> label)
-            com.google.android.gms.maps.model.Polyline pl = map.addPolyline(
-                    new PolylineOptions()
-                            .add(truePos, labelPos)
-                            .width(4f)
-                            .color(COLOR_LINE)
-                            .zIndex(3f)
-            );
-            leaderLines.put(i, pl);
-        }
-    }
-
-    // Offsets are in screen pixels - spread labels so numbers never overlap
-    private Point offsetForIndex(int i) {
-        // pattern: rotate around + different radius
-        // (px) tuned for phone screens
-        int[] dx = new int[]{ 0, 80, -80, 90, -90, 0, 110, -110, 60, -60 };
-        int[] dy = new int[]{ -90, -70, -70, 20, 20, 95, 60, 60, 115, 115 };
-
-        int idx = i % dx.length;
-
-        // Slightly increase spread for larger routes
-        int scale = 1 + (i / dx.length);
-        return new Point(dx[idx] * scale, dy[idx] * scale);
-    }
-
-    private int resolveColor(RouteStop s, int currentSeq) {
-        if (s.getSeq() == 0) return COLOR_BLUE;
-
-        RouteStopStatusStore.Status st = statusStore.getStatus(companyId, s.getPackageId());
-        if (st == RouteStopStatusStore.Status.DELIVERED) return COLOR_GREEN;
-        if (st == RouteStopStatusStore.Status.FAILED) return COLOR_RED;
-
-        if (s.getSeq() == currentSeq) return COLOR_BLUE;
         return COLOR_GRAY;
     }
 
-    private String buildTitle(RouteStop s) {
-        if (s.getSeq() == 0) return "#0 • START";
-        return "#" + s.getSeq() + " • DELIVERY • " + (s.getPackageId() == null ? "-" : s.getPackageId());
+    // Builds the marker title for a grouped location.
+    private String buildGroupTitle(List<RouteStop> group) {
+        if (group.size() == 1) {
+            RouteStop stop = group.get(0);
+            if (stop.getSeq() == 0) return "#0 • START";
+            return "#" + stop.getSeq() + " • DELIVERY • " +
+                    (stop.getPackageId() == null ? "-" : stop.getPackageId());
+        }
+
+        return "Stops " + buildGroupLabel(group);
     }
 
-    private String buildSnippet(RouteStop s) {
-        return "lat/lon: " + s.getLat() + ", " + s.getLon() +
-                "\nleg_km: " + round3(s.getLegKm()) + " | cum_km: " + round3(s.getCumKm()) +
-                "\ncum_weight: " + round3(s.getCumWeight()) +
-                " | cum_volume: " + round3(s.getCumVolume()) +
-                " | cum_profit: " + round3(s.getCumProfit()) +
-                "\nStatus: " + resolveStatusText(s);
+    // Builds the marker snippet with address, package, and status details.
+    private String buildGroupSnippet(List<RouteStop> group) {
+        StringBuilder sb = new StringBuilder();
+
+        RouteStop first = group.get(0);
+
+        if (isValid(first.getAddress())) {
+            sb.append("Address: ").append(first.getAddress());
+        } else {
+            sb.append("Coordinates: ")
+                    .append(round5(first.getLat()))
+                    .append(", ")
+                    .append(round5(first.getLon()));
+        }
+
+        if (group.size() > 1) {
+            sb.append("\nPackages at this address:");
+        }
+
+        for (RouteStop stop : group) {
+            if (stop.getSeq() == 0) {
+                sb.append("\n#0 START");
+                continue;
+            }
+
+            sb.append("\n#")
+                    .append(stop.getSeq())
+                    .append(" • ")
+                    .append(stop.getPackageId() == null ? "-" : stop.getPackageId())
+                    .append(" | Weight: ")
+                    .append(round2(stop.getCumWeight()))
+                    .append(" | Volume: ")
+                    .append(round2(stop.getCumVolume()))
+                    .append(" | Profit: ")
+                    .append(round2(stop.getCumProfit()))
+                    .append(" | Status: ")
+                    .append(resolveStatusText(stop));
+        }
+
+        return sb.toString();
     }
 
-    private String resolveStatusText(RouteStop s) {
-        if (s.getSeq() == 0) return "START";
-        RouteStopStatusStore.Status st = statusStore.getStatus(companyId, s.getPackageId());
-        return st == null ? "PENDING" : st.name();
+    // Resolves the status text shown in map marker details.
+    private String resolveStatusText(RouteStop stop) {
+        if (stop.getSeq() == 0) return "START";
+
+        if (stop.getPackageId() != null) {
+            RouteStopStatusStore.Status st = statusStore.getStatus(companyId, stop.getPackageId());
+            if (st != null) return st.name();
+        }
+
+        return "PENDING";
     }
 
-    private BitmapDescriptor createDotIcon(int color) {
-        int size = 26;
-        Bitmap b = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
+    // Creates a circular numbered marker icon.
+    private BitmapDescriptor createCircleLabelIcon(String label, int color) {
+        int size;
+
+        if (label.length() <= 1) {
+            size = 90;
+        } else if (label.length() <= 3) {
+            size = 105;
+        } else {
+            size = 125;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
 
         Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
         fill.setColor(color);
@@ -292,52 +383,40 @@ public class RouteMapActivity extends AppCompatActivity {
         Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
         stroke.setColor(Color.WHITE);
         stroke.setStyle(Paint.Style.STROKE);
-        stroke.setStrokeWidth(4f);
-
-        float r = size / 2f - 2f;
-        c.drawCircle(size / 2f, size / 2f, r, fill);
-        c.drawCircle(size / 2f, size / 2f, r, stroke);
-
-        return BitmapDescriptorFactory.fromBitmap(b);
-    }
-
-    private BitmapDescriptor createLabelIcon(int number, int color) {
-        int w = 110;
-        int h = 70;
-
-        Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-
-        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bg.setColor(color);
-        bg.setStyle(Paint.Style.FILL);
-
-        Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
-        stroke.setColor(Color.WHITE);
-        stroke.setStyle(Paint.Style.STROKE);
         stroke.setStrokeWidth(6f);
 
-        RectF r = new RectF(6, 6, w - 6, h - 6);
-        c.drawRoundRect(r, 26f, 26f, bg);
-        c.drawRoundRect(r, 26f, 26f, stroke);
+        float cx = size / 2f;
+        float cy = size / 2f;
+        float radius = size / 2f - 6f;
+
+        canvas.drawCircle(cx, cy, radius, fill);
+        canvas.drawCircle(cx, cy, radius, stroke);
 
         Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
         text.setColor(Color.WHITE);
         text.setTextAlign(Paint.Align.CENTER);
         text.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        text.setTextSize(34f);
 
-        c.drawText(String.valueOf(number), w / 2f, h / 2f + 12f, text);
+        if (label.length() <= 1) {
+            text.setTextSize(40f);
+        } else if (label.length() <= 3) {
+            text.setTextSize(32f);
+        } else {
+            text.setTextSize(26f);
+        }
 
-        return BitmapDescriptorFactory.fromBitmap(b);
+        float y = cy - ((text.descent() + text.ascent()) / 2f);
+        canvas.drawText(label, cx, y, text);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    // Opens Google Maps navigation to the current delivery stop.
     private void navigateCurrentLeg() {
         int currentSeq = progressStore.getCurrentSeq(companyId);
-
         int destSeq = Math.max(1, currentSeq);
-        RouteStop dest = findBySeq(destSeq);
 
+        RouteStop dest = findBySeq(destSeq);
         if (dest == null) {
             Toast.makeText(this, "No next stop to navigate to.", Toast.LENGTH_SHORT).show();
             return;
@@ -351,18 +430,26 @@ public class RouteMapActivity extends AppCompatActivity {
             startActivity(i);
         } catch (Exception e) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination=" + dest.getLat() + "," + dest.getLon())));
+                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination="
+                            + dest.getLat() + "," + dest.getLon())));
         }
     }
 
+    // Finds a route stop by sequence number.
     private RouteStop findBySeq(int seq) {
-        for (RouteStop s : stops) {
-            if (s.getSeq() == seq) return s;
+        for (RouteStop stop : stops) {
+            if (stop.getSeq() == seq) return stop;
         }
         return null;
     }
 
-    private double round3(double v) {
-        return Math.round(v * 1000.0) / 1000.0;
+    // Formats a number with two decimal digits.
+    private String round2(double v) {
+        return String.format(Locale.US, "%.2f", v);
+    }
+
+    // Formats a coordinate with five decimal digits.
+    private String round5(double v) {
+        return String.format(Locale.US, "%.5f", v);
     }
 }

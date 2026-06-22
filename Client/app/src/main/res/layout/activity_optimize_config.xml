@@ -1,152 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/screen_padding">
 
         <Button
             android:id="@+id/btnBackOptimize"
+            style="@style/Btn.Secondary"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/optimize_title"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:text="Run Optimization"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
             android:id="@+id/tvOptimizeCompany"
-            android:layout_width="wrap_content"
+            style="@style/App.Body"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Company: -"
-            android:layout_marginBottom="8dp" />
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="@dimen/spacing_md" />
 
         <TextView
             android:id="@+id/tvOptimizeCourier"
-            android:layout_width="wrap_content"
+            style="@style/App.Body"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Courier: -"
-            android:layout_marginBottom="16dp" />
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/start_lat_label"
-            android:layout_marginBottom="4dp" />
-
-        <EditText
-            android:id="@+id/etStartLat"
+            style="@style/App.Label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/start_lat_hint"
-            android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/start_lon_label"
-            android:layout_marginBottom="4dp" />
+            android:text="Start Address"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
-            android:id="@+id/etStartLon"
+            android:id="@+id/etStartAddress"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/start_lon_hint"
-            android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
+            android:hint="Example: Bar Ilan Street 29, Raanana, Israel"
+            android:inputType="textPostalAddress"
+            android:minLines="2"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/max_distance_label"
-            android:layout_marginBottom="4dp" />
+            android:text="End Address (Optional)"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <EditText
+            android:id="@+id/etEndAddress"
+            style="@style/App.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Leave empty if there is no final destination"
+            android:inputType="textPostalAddress"
+            android:minLines="2"
+            android:layout_marginBottom="@dimen/spacing_xl" />
+
+        <TextView
+            style="@style/App.Label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Max Distance (km)"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
             android:id="@+id/etMaxDistance"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/max_distance_hint"
             android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
+            android:text="50"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/max_weight_label"
-            android:layout_marginBottom="4dp" />
+            android:text="Max Weight"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
             android:id="@+id/etMaxWeight"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/max_weight_hint"
             android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
+            android:text="100"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/max_volume_label"
-            android:layout_marginBottom="4dp" />
+            android:text="Max Volume"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
             android:id="@+id/etMaxVolume"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/max_volume_hint"
             android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
+            android:text="100"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/max_stops_label"
-            android:layout_marginBottom="4dp" />
+            android:text="Max Stops"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
             android:id="@+id/etMaxStops"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/max_stops_hint"
             android:inputType="number"
-            android:layout_marginBottom="12dp" />
+            android:text="20"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/App.Label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_date_label"
-            android:layout_marginBottom="4dp" />
+            android:text="Service Date"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <EditText
             android:id="@+id/etServiceDate"
+            style="@style/App.Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/service_date_hint"
-            android:layout_marginBottom="16dp" />
+            android:hint="YYYY-MM-DD"
+            android:inputType="text"
+            android:text="2026-01-18"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <TextView
             android:id="@+id/tvOptimizeStatus"
-            android:layout_width="wrap_content"
+            style="@style/App.Status"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/optimize_ready"
-            android:layout_marginBottom="16dp" />
+            android:text="Ready to run optimization"
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <Button
             android:id="@+id/btnRunOptimize"
+            style="@style/Btn.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/run_optimization" />
+            android:text="Run Optimization" />
 
     </LinearLayout>
+
 </ScrollView>

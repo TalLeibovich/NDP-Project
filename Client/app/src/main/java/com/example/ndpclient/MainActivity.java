@@ -26,12 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRunOptimization;
     private Button btnContinueLastRoute;
     private Button btnChangeCourier;
+    private Button btnCompanyDefaultAddress;
+    private Button btnCourierDefaults;
     private Button btnReleaseActiveRun;
     private Button btnLogout;
 
     private SessionManager sessionManager;
     private OptimizeResultStore optimizeResultStore;
 
+    // Initializes the manager dashboard and connects all main actions.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         btnRunOptimization = findViewById(R.id.btnRunOptimization);
         btnContinueLastRoute = findViewById(R.id.btnContinueLastRoute);
         btnChangeCourier = findViewById(R.id.btnChangeCourier);
+        btnCompanyDefaultAddress = findViewById(R.id.btnCompanyDefaultAddress);
+        btnCourierDefaults = findViewById(R.id.btnCourierDefaults);
         btnReleaseActiveRun = findViewById(R.id.btnReleaseActiveRun);
         btnLogout = findViewById(R.id.btnLogout);
 
@@ -78,6 +83,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CourierSelectionActivity.class))
         );
 
+        btnCompanyDefaultAddress.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, CompanyDefaultAddressActivity.class))
+        );
+
+        btnCourierDefaults.setOnClickListener(v -> {
+            if (!sessionManager.hasCourier()) {
+                Toast.makeText(MainActivity.this, "Please select courier first.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, CourierSelectionActivity.class));
+                return;
+            }
+            startActivity(new Intent(MainActivity.this, CourierDefaultsActivity.class));
+        });
+
         btnReleaseActiveRun.setOnClickListener(v -> showActiveRunsDialog());
 
         btnLogout.setOnClickListener(v -> {
@@ -91,12 +109,14 @@ public class MainActivity extends AppCompatActivity {
         refreshUiAndActions();
     }
 
+    // Refreshes the dashboard when returning from related screens.
     @Override
     protected void onResume() {
         super.onResume();
         refreshUiAndActions();
     }
 
+    // Updates session details, button states, and route visibility.
     private void refreshUiAndActions() {
         if (!sessionManager.hasCourier()) {
             String companyId = sessionManager.getCompanyId();
@@ -122,8 +142,12 @@ public class MainActivity extends AppCompatActivity {
 
         tvMainStatus.setText(text);
 
+        boolean hasCompany = sessionManager.hasCompany();
         boolean hasCourier = sessionManager.hasCourier();
+
         btnRunOptimization.setEnabled(hasCourier);
+        btnCompanyDefaultAddress.setEnabled(hasCompany);
+        btnCourierDefaults.setEnabled(hasCompany && hasCourier);
 
         boolean hasLastRoute = optimizeResultStore.hasAssigned(companyId, courierId);
         if (hasLastRoute && hasCourier) {
@@ -134,23 +158,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         btnChangeCourier.setEnabled(true);
-        btnReleaseActiveRun.setEnabled(true);
+        btnReleaseActiveRun.setEnabled(hasCompany);
     }
 
+    // Closes the app from the main dashboard.
     @Override
     public void onBackPressed() {
         finishAffinity();
     }
 
-    // -----------------------------------------
-    // Active Runs - single dialog: choose + VIEW/RELEASE
-    // -----------------------------------------
     private static class RunMeta {
         String assignedTo = "Unassigned";
         int lockedCount = 0;
         boolean mixed = false;
     }
 
+    // Loads active runs for the selected company and opens the selection dialog.
     private void showActiveRunsDialog() {
         String companyId = sessionManager.getCompanyId();
         if (companyId == null || companyId.trim().isEmpty()) {
@@ -206,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Fetches package metadata for active runs and shows run ownership details.
     private void fetchRunMetaAndShow(String companyId, List<String> runIds) {
         try {
             String path = "/packages?company_id=" + URLEncoder.encode(companyId, "UTF-8") + "&delivered=0";
@@ -240,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } catch (Exception ignored) {}
 
-                        // Build display + who per row
                         final String[] display = new String[runIds.size()];
                         final String[] whoArr = new String[runIds.size()];
 
@@ -275,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                                         return;
                                     }
 
-                                    // Best-effort: view stored result for that courier
                                     sessionManager.saveCourier(who, who);
                                     startActivity(new Intent(MainActivity.this, OptimizeResultActivity.class));
                                 })
@@ -302,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Confirms release before completing an active run.
     private void confirmReleaseRun(String companyId, String runId) {
         new AlertDialog.Builder(this)
                 .setTitle("Release run?")
@@ -311,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Completes a run on the server and refreshes local state.
     private void releaseRun(String companyId, String runId) {
         Toast.makeText(this, "Releasing run...", Toast.LENGTH_SHORT).show();
         ApiClient.post("/runs/" + runId + "/complete", "{}", new ApiClient.ApiCallback() {
@@ -332,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Clears the current courier route only when it matches the released run.
     private void tryClearCurrentCourierRouteIfMatches(String companyId, String runId) {
         String courierId = sessionManager.getCourierId();
         if (companyId == null || courierId == null) return;

@@ -23,6 +23,7 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
     private final DeliveryProgressStore progressStore;
     private final SessionManager sessionManager;
 
+    // Creates an adapter for displaying and updating route stops.
     public RouteStopsAdapter(Context context, List<RouteStop> stops, String companyId) {
         super(context, 0, stops);
         this.companyId = companyId;
@@ -31,10 +32,12 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         this.sessionManager = new SessionManager(context);
     }
 
+    // Returns the current delivery sequence for this company.
     private int getCurrentSeq() {
         return progressStore.getCurrentSeq(companyId);
     }
 
+    // Creates a stable snapshot of the current route stops.
     private List<RouteStop> snapshotStops() {
         ArrayList<RouteStop> list = new ArrayList<>();
         for (int i = 0; i < getCount(); i++) {
@@ -44,6 +47,7 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         return list;
     }
 
+    // Checks whether the route has already started.
     private boolean hasRouteStarted(List<RouteStop> allStops) {
         int currentSeq = getCurrentSeq();
         if (currentSeq >= 1) return true;
@@ -58,6 +62,7 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         return false;
     }
 
+    // Advances the saved progress to the next delivery stop.
     private void advanceToNextDelivery(List<RouteStop> allStops, int currentStopSeq) {
         int nextSeq = currentStopSeq;
 
@@ -71,8 +76,14 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         progressStore.setCurrentSeq(companyId, nextSeq);
     }
 
+    // Formats start stop details for display.
     private String formatStartDetails(RouteStop stop) {
-        // Keep START minimal & stable
+        String address = stop.getAddress();
+
+        if (address != null && !address.trim().isEmpty()) {
+            return "Address: " + address.trim();
+        }
+
         return String.format(
                 Locale.US,
                 "Location: %.5f, %.5f",
@@ -81,18 +92,25 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         );
     }
 
+    // Formats delivery stop details for display.
     private String formatDeliveryDetails(RouteStop stop) {
-        // Requested: only full words (no coords, no km, no cum_*)
-        // NOTE: We display the values we have on RouteStop (currently cumWeight/cumVolume/cumProfit).
+        String address = stop.getAddress();
+
+        if (address == null || address.trim().isEmpty()) {
+            address = "Address not available";
+        }
+
         return String.format(
                 Locale.US,
-                "Weight: %.2f\nVolume: %.2f\nProfit: %.2f",
+                "Address: %s\nWeight: %.2f\nVolume: %.2f\nProfit: %.2f",
+                address,
                 stop.getCumWeight(),
                 stop.getCumVolume(),
                 stop.getCumProfit()
         );
     }
 
+    // Binds route stop data and delivery actions into a list row.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         RouteStop stop = getItem(position);
@@ -113,7 +131,6 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         int currentSeq = getCurrentSeq();
         boolean started = hasRouteStarted(allStops);
 
-        // Title
         String title;
         if ("start".equalsIgnoreCase(stop.getType())) {
             title = "#0 • START";
@@ -124,26 +141,21 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
         }
         tvTitle.setText(title);
 
-        // Details (UPDATED)
         if ("start".equalsIgnoreCase(stop.getType())) {
             tvDetails.setText(formatStartDetails(stop));
         } else if (stop.isDelivery()) {
             tvDetails.setText(formatDeliveryDetails(stop));
         } else {
-            // fallback
             tvDetails.setText("");
         }
 
-        // START status
         if ("start".equalsIgnoreCase(stop.getType())) {
             tvStatus.setText("Status: " + (started ? "STARTED" : "NOT_STARTED"));
             layoutButtons.setVisibility(View.GONE);
             return convertView;
         }
 
-        // Delivery stops
         if (stop.isDelivery() && stop.getPackageId() != null) {
-
             RouteStopStatusStore.Status stored = statusStore.getStatus(companyId, stop.getPackageId());
             RouteStopStatusStore.Status displayStatus = stored;
 
@@ -158,14 +170,14 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
             tvStatus.setText("Status: " + displayStatus.name());
             layoutButtons.setVisibility(View.VISIBLE);
 
-            // Disable buttons if already done
-            boolean alreadyFinished = (stored == RouteStopStatusStore.Status.DELIVERED || stored == RouteStopStatusStore.Status.FAILED);
+            boolean alreadyFinished =
+                    stored == RouteStopStatusStore.Status.DELIVERED ||
+                            stored == RouteStopStatusStore.Status.FAILED;
+
             btnDelivered.setEnabled(!alreadyFinished);
             btnFailed.setEnabled(!alreadyFinished);
 
-            // ✅ DELIVERED -> update server + local
             btnDelivered.setOnClickListener(v -> {
-                // prevent double taps
                 btnDelivered.setEnabled(false);
                 btnFailed.setEnabled(false);
 
@@ -213,7 +225,6 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
                 }
             });
 
-            // FAILED -> local only
             btnFailed.setOnClickListener(v -> {
                 statusStore.setStatus(companyId, stop.getPackageId(), RouteStopStatusStore.Status.FAILED);
                 advanceToNextDelivery(allStops, stop.getSeq());
@@ -223,7 +234,6 @@ public class RouteStopsAdapter extends ArrayAdapter<RouteStop> {
             return convertView;
         }
 
-        // Default non-delivery
         tvStatus.setText("Status: PENDING");
         layoutButtons.setVisibility(View.GONE);
         return convertView;

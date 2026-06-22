@@ -10,8 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryModeActivity extends AppCompatActivity {
@@ -31,6 +33,7 @@ public class DeliveryModeActivity extends AppCompatActivity {
     private String runId = null;
     private boolean completeInFlight = false;
 
+    // Initializes delivery mode and loads the assigned route.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +55,6 @@ public class DeliveryModeActivity extends AppCompatActivity {
 
         btnNextStop.setOnClickListener(v -> {
             Toast.makeText(this, "Next stop (UI only)", Toast.LENGTH_SHORT).show();
-            // אם יש לך לוגיקה קיימת ל-Next Stop תשאיר אותה כאן
         });
 
         btnCompleteRoute.setOnClickListener(v -> showCompleteDialog());
@@ -60,6 +62,7 @@ public class DeliveryModeActivity extends AppCompatActivity {
         loadAssignedRouteOrExit();
     }
 
+    // Loads the assigned route or returns to the courier home screen if none exists.
     private void loadAssignedRouteOrExit() {
         String companyId = sessionManager.getCompanyId();
         String courierId = sessionManager.getCourierId();
@@ -76,7 +79,33 @@ public class DeliveryModeActivity extends AppCompatActivity {
             JSONObject obj = new JSONObject(assigned);
             runId = obj.optString("run_id", null);
 
-            List<RouteStop> stops = RouteOrderParser.parseOrderedStops(obj, "DeliveryMode");
+            JSONArray routeStopsArr = obj.optJSONArray("route_stops");
+            List<RouteStop> stops = new ArrayList<>();
+
+            if (routeStopsArr != null) {
+                for (int i = 0; i < routeStopsArr.length(); i++) {
+                    JSONObject s = routeStopsArr.getJSONObject(i);
+
+                    int seq = s.optInt("seq", i);
+                    String type = s.optString("type", "");
+                    double lat = s.optDouble("lat", 0.0);
+                    double lon = s.optDouble("lon", 0.0);
+                    String packageId = s.optString("package_id", null);
+
+                    String address = readAddress(s);
+
+                    double legKm = s.optDouble("leg_km", 0.0);
+                    double cumKm = s.optDouble("cum_km", 0.0);
+                    double cumWeight = s.optDouble("cum_weight", 0.0);
+                    double cumVolume = s.optDouble("cum_volume", 0.0);
+                    double cumProfit = s.optDouble("cum_profit", 0.0);
+
+                    if (packageId != null && packageId.trim().isEmpty()) packageId = null;
+
+                    stops.add(new RouteStop(seq, type, lat, lon, packageId, address,
+                            legKm, cumKm, cumWeight, cumVolume, cumProfit));
+                }
+            }
 
             tvDeliveryHeader.setText("Delivery Mode");
 
@@ -93,6 +122,7 @@ public class DeliveryModeActivity extends AppCompatActivity {
         }
     }
 
+    // Shows a confirmation dialog before completing the active route.
     private void showCompleteDialog() {
         if (completeInFlight) return;
 
@@ -111,6 +141,7 @@ public class DeliveryModeActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Completes the current run and clears the local delivery state.
     private void completeRoute() {
         completeInFlight = true;
         btnCompleteRoute.setEnabled(false);
@@ -150,5 +181,22 @@ public class DeliveryModeActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    // Reads a stop address using the supported response field names.
+    private String readAddress(JSONObject obj) {
+        String formatted = obj.optString("formatted_address", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        formatted = obj.optString("FormattedAddress", null);
+        if (formatted != null && !formatted.trim().isEmpty() && !"null".equalsIgnoreCase(formatted)) return formatted;
+
+        String address = obj.optString("address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        address = obj.optString("Address", null);
+        if (address != null && !address.trim().isEmpty() && !"null".equalsIgnoreCase(address)) return address;
+
+        return null;
     }
 }

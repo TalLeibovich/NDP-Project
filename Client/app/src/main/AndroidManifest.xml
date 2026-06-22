@@ -12,15 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".CompanyDefaultAddressActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".CourierDefaultsActivity"
+            android:exported="false" />
+
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
 
-
         <activity
             android:name=".CourierHomeActivity"
             android:exported="false" />
-
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -29,46 +36,55 @@
         <activity
             android:name=".RouteMapActivity"
             android:exported="false" />
+
         <activity
             android:name=".DeliveryModeActivity"
             android:exported="false" />
+
         <activity
             android:name=".OptimizeResultActivity"
             android:exported="false" />
+
         <activity
             android:name=".OptimizeConfigActivity"
             android:exported="false" />
+
         <activity
             android:name=".EditPackageActivity"
             android:exported="false" />
+
         <activity
             android:name=".AddPackageActivity"
             android:exported="false" />
+
         <activity
             android:name=".PackagesListActivity"
             android:exported="false" />
+
         <activity
             android:name=".CourierSelectionActivity"
             android:exported="false" />
+
         <activity
             android:name=".CompanySelectionActivity"
             android:exported="false" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="false" /> <!-- Launcher -->
+            android:exported="false" />
+
+        <activity
+            android:name=".RoleSelectionActivity"
+            android:exported="false" />
+
         <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".RoleSelectionActivity"
-            android:exported="false" />
-
 
     </application>
 

@@ -16,6 +16,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
 
+    // Initializes the role selection screen for the selected company.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
-        // Guard: חייב חברה
         if (!sessionManager.hasCompany()) {
             startActivity(new Intent(this, CompanySelectionActivity.class));
             finish();
@@ -38,7 +38,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
         tvSelectedCompany.setText("Company: " + sessionManager.getCompanyName());
 
         btnBack.setOnClickListener(v -> {
-            // חזרה לבחירת חברה (לא exit)
             startActivity(new Intent(this, CompanySelectionActivity.class));
             finish();
         });
@@ -56,6 +55,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
         });
     }
 
+    // Returns to the company selection screen.
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, CompanySelectionActivity.class));

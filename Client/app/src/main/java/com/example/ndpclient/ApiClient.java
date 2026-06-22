@@ -17,6 +17,7 @@ public class ApiClient {
     private static final int CONNECT_TIMEOUT = 15000;
     private static final int READ_TIMEOUT = 15000;
 
+    // Sends an asynchronous GET request to the API.
     public static void get(final String path, final ApiCallback callback) {
         new Thread(() -> {
             try {
@@ -45,14 +46,17 @@ public class ApiClient {
         }).start();
     }
 
+    // Sends an asynchronous POST request with a JSON body.
     public static void post(final String path, final String jsonBody, final ApiCallback callback) {
         sendWithBody("POST", path, jsonBody, callback);
     }
 
+    // Sends an asynchronous PUT request with a JSON body.
     public static void put(final String path, final String jsonBody, final ApiCallback callback) {
         sendWithBody("PUT", path, jsonBody, callback);
     }
 
+    // Handles API requests that include a JSON request body.
     private static void sendWithBody(final String method, final String path, final String jsonBody, final ApiCallback callback) {
         new Thread(() -> {
             try {
@@ -87,6 +91,7 @@ public class ApiClient {
         }).start();
     }
 
+    // Reads an input stream into a single response string.
     private static String readStream(InputStream is) throws Exception {
         if (is == null) return "";
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));

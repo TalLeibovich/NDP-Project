@@ -17,7 +17,8 @@ public class CourierHomeActivity extends AppCompatActivity {
 
     private Button btnCourierRunOptimize;
     private Button btnCourierStartOrContinue;
-    private Button btnCourierOpenMap;          // NEW
+    private Button btnCourierOpenMap;
+    private Button btnCourierOptimizationDefaults;
     private Button btnCourierCompleteRoute;
     private Button btnCourierLogout;
 
@@ -28,6 +29,7 @@ public class CourierHomeActivity extends AppCompatActivity {
 
     private boolean completeInFlight = false;
 
+    // Initializes the courier home screen and connects all navigation actions.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,8 @@ public class CourierHomeActivity extends AppCompatActivity {
 
         btnCourierRunOptimize = findViewById(R.id.btnCourierRunOptimize);
         btnCourierStartOrContinue = findViewById(R.id.btnCourierStartOrContinue);
-        btnCourierOpenMap = findViewById(R.id.btnCourierOpenMap); // NEW
+        btnCourierOpenMap = findViewById(R.id.btnCourierOpenMap);
+        btnCourierOptimizationDefaults = findViewById(R.id.btnCourierOptimizationDefaults);
         btnCourierCompleteRoute = findViewById(R.id.btnCourierCompleteRoute);
         btnCourierLogout = findViewById(R.id.btnCourierLogout);
 
@@ -59,7 +62,6 @@ public class CourierHomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, DeliveryModeActivity.class));
         });
 
-        // NEW: open map directly (only when assigned exists)
         btnCourierOpenMap.setOnClickListener(v -> {
             String companyId = sessionManager.getCompanyId();
             String courierId = sessionManager.getCourierId();
@@ -70,25 +72,30 @@ public class CourierHomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, RouteMapActivity.class));
         });
 
+        btnCourierOptimizationDefaults.setOnClickListener(v ->
+                startActivity(new Intent(CourierHomeActivity.this, CourierDefaultsActivity.class))
+        );
+
         btnCourierCompleteRoute.setOnClickListener(v -> showCompleteDialog());
 
         btnCourierLogout.setOnClickListener(v -> {
-            // keep company + role, logout only the courier
             sessionManager.clearCourier();
 
-            Intent intent = new Intent(CourierHomeActivity.this, LoginActivity.class); // מסך בחירת שליח
+            Intent intent = new Intent(CourierHomeActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         });
     }
 
+    // Refreshes courier details and action states when returning to the screen.
     @Override
     protected void onResume() {
         super.onResume();
         refreshUi();
     }
 
+    // Updates the visible courier session details and button availability.
     private void refreshUi() {
         String companyName = sessionManager.getCompanyName();
         String companyId = sessionManager.getCompanyId();
@@ -103,14 +110,15 @@ public class CourierHomeActivity extends AppCompatActivity {
         );
 
         boolean hasAssigned = optimizeResultStore.hasAssigned(companyId, courierId);
+        boolean hasSession = sessionManager.hasCompany() && sessionManager.hasCourier();
 
-        // ✅ enabled/disabled (background grey handled by selector styles)
         btnCourierStartOrContinue.setEnabled(hasAssigned);
         btnCourierOpenMap.setEnabled(hasAssigned);
-
         btnCourierCompleteRoute.setEnabled(hasAssignedRunId());
+        btnCourierOptimizationDefaults.setEnabled(hasSession);
     }
 
+    // Checks whether the assigned route contains a valid server run identifier.
     private boolean hasAssignedRunId() {
         String companyId = sessionManager.getCompanyId();
         String courierId = sessionManager.getCourierId();
@@ -127,6 +135,7 @@ public class CourierHomeActivity extends AppCompatActivity {
         }
     }
 
+    // Extracts the run identifier from the assigned route data.
     private String getAssignedRunId() {
         String companyId = sessionManager.getCompanyId();
         String courierId = sessionManager.getCourierId();
@@ -140,6 +149,7 @@ public class CourierHomeActivity extends AppCompatActivity {
         }
     }
 
+    // Shows a confirmation dialog before completing the active route.
     private void showCompleteDialog() {
         if (completeInFlight) return;
 
@@ -158,6 +168,7 @@ public class CourierHomeActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Completes the active route and clears local route state.
     private void completeRoute(String runId) {
         completeInFlight = true;
         btnCourierCompleteRoute.setEnabled(false);
