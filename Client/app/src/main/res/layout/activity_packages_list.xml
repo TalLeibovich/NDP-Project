@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/background_soft">
+
+    <Button
+        android:id="@+id/btnBackPackages"
+        style="@style/Btn.Primary"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="@string/back"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvPackagesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/packages_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_main"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvPackagesCompany"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_company_selected"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvPackagesStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_packages"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="12dp" />
+
+    <!-- ✅ Filters (checkboxes) -->
+    <LinearLayout
+        android:id="@+id/layoutPackageFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <CheckBox
+            android:id="@+id/cbFilterAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All"
+            android:layout_marginEnd="16dp"/>
+
+        <CheckBox
+            android:id="@+id/cbFilterOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open"
+            android:layout_marginEnd="16dp"/>
+
+        <CheckBox
+            android:id="@+id/cbFilterDelivered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delivered"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnLoadPackages"
+        style="@style/Btn.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/load_packages"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnAddPackage"
+        style="@style/Btn.Success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_package"
+        android:layout_marginBottom="16dp" />
+
+    <ListView
+        android:id="@+id/listViewPackages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollCourierDefaults"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
+
+        <Button
+            android:id="@+id/btnBackCourierDefaults"
+            style="@style/Btn.Secondary"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:layout_marginBottom="@dimen/spacing_xl" />
+
+        <TextView
+            style="@style/App.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Courier Optimization Defaults"
+            android:layout_marginBottom="@dimen/spacing_lg" />
+
+        <TextView
+            android:id="@+id/tvCourierDefaultsInfo"
+            style="@style/App.Status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Courier: -"
+            android:layout_marginBottom="@dimen/spacing_xl" />
+
+        <TextView
+            style="@style/App.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Vehicle"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <TextView
+            style="@style/App.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose the courier vehicle type"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="@dimen/spacing_lg" />
+
+        <LinearLayout
+            android:id="@+id/cardPrivateCar"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="@dimen/spacing_md">
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="65dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vehicle_private_car" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="18dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Private Car"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Suitable for small deliveries"
+                    android:textColor="@color/text_secondary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardMotorcycle"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="@dimen/spacing_md">
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="65dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vehicle_motorcycle" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="18dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Motorcycle"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fast option for city routes"
+                    android:textColor="@color/text_secondary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardTruck"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="@dimen/spacing_md">
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="65dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vehicle_truck" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="18dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Truck"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Good for heavy packages"
+                    android:textColor="@color/text_secondary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardVan"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="@dimen/spacing_xl">
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="65dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vehicle_van" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="18dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Van / Berlingo"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Balanced option for medium routes"
+                    android:textColor="@color/text_secondary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCourierDefaultValues"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/App.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default Max Distance (km)"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <EditText
+                android:id="@+id/etDefaultMaxDistance"
+                style="@style/App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="50"
+                android:layout_marginBottom="@dimen/spacing_lg" />
+
+            <TextView
+                style="@style/App.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default Max Weight"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <EditText
+                android:id="@+id/etDefaultMaxWeight"
+                style="@style/App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="100"
+                android:layout_marginBottom="@dimen/spacing_lg" />
+
+            <TextView
+                style="@style/App.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default Max Volume"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <EditText
+                android:id="@+id/etDefaultMaxVolume"
+                style="@style/App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="100"
+                android:layout_marginBottom="@dimen/spacing_lg" />
+
+            <TextView
+                style="@style/App.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default Max Stops"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <EditText
+                android:id="@+id/etDefaultMaxStops"
+                style="@style/App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="20"
+                android:layout_marginBottom="@dimen/spacing_lg" />
+
+            <TextView
+                style="@style/App.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default End Address (Optional)"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <EditText
+                android:id="@+id/etDefaultEndAddress"
+                style="@style/App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Leave empty if route has no fixed end point"
+                android:inputType="textPostalAddress"
+                android:minLines="2"
+                android:layout_marginBottom="@dimen/spacing_xxl" />
+
+            <Button
+                android:id="@+id/btnSaveCourierDefaults"
+                style="@style/Btn.Success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Courier Defaults" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

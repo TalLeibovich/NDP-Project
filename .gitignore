@@ -1,0 +1,49 @@
+# Python backend
+NDP/venv/
+NDP/.venv/
+NDP/__pycache__/
+NDP/**/*.pyc
+NDP/.pytest_cache/
+NDP/.env
+NDP/API/.env
+NDP/*firebase-adminsdk*.json
+NDP/data/
+NDP/logs/
+NDP/runs/
+NDP/_audit_*
+NDP/dist_matrix.txt
+NDP/packages.txt
+NDP/constraints.txt
+NDP/test_candidate_cap.py
+NDP/API/test_api.py
+
+# Android client
+Client/.gradle/
+Client/build/
+Client/**/build/
+Client/local.properties
+Client/.idea/
+Client/*.iml
+Client/**/*.apk
+Client/**/*.aab
+Client/**/*.jks
+Client/**/*.keystore
+Client/keystore.properties
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+
+# Nested Android Studio folders
+Client/**/.idea/
+Client/**/*.iml
+
+# Extra Android generated files
+Client/**/.gradle/
+Client/**/build/
+Client/**/local.properties
+Client/**/*.apk
+Client/**/*.aab
+Client/**/*.jks
+Client/**/*.keystore
+Client/**/keystore.properties

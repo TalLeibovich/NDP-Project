@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnBackEditPackage"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_package"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/etEditPackageId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/package_id_hint"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etEditAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address_hint"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnGeocodeEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/geocode"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvEditLocationStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location_not_checked"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvEditLatLon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/etEditWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/weight_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etEditVolume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/volume_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etEditProfit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/profit_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etEditDeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/deadline_hint"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnSaveChanges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_changes" />
+
+    </LinearLayout>
+</ScrollView>

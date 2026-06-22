@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <Button
+        android:id="@+id/btnBackCompany"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="@string/back"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_company_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/tvCompanyStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_company"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnLoadCompanies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/load_companies"
+        android:layout_marginBottom="10dp" />
+
+    <ListView
+        android:id="@+id/listViewCompanies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="220dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="16dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/delivery_logo"
+        android:contentDescription="@string/app_name" />
+
+</LinearLayout>

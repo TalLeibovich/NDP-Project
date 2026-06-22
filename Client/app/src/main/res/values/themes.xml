@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.FinalProject" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Keep your defaults -->
+    </style>
+
+    <style name="Theme.FinalProject" parent="Base.Theme.FinalProject" />
+
+    <!-- Base button style -->
+    <style name="Btn">
+        <!-- IMPORTANT: disable Material tint that forces purple -->
+        <item name="backgroundTint">@null</item>
+        <item name="android:backgroundTint">@null</item>
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="Btn.Primary" parent="Btn">
+        <item name="android:background">@drawable/btn_primary_selector</item>
+    </style>
+
+    <style name="Btn.Success" parent="Btn">
+        <item name="android:background">@drawable/btn_success_selector</item>
+    </style>
+
+    <style name="Btn.Danger" parent="Btn">
+        <item name="android:background">@drawable/btn_danger_selector</item>
+    </style>
+</resources>

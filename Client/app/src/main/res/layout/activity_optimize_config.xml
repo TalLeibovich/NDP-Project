@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnBackOptimize"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/optimize_title"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvOptimizeCompany"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Company: -"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvOptimizeCourier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Courier: -"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_lat_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etStartLat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/start_lat_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_lon_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etStartLon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/start_lon_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_distance_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etMaxDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_distance_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_weight_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etMaxWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_weight_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_volume_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etMaxVolume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_volume_hint"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_stops_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etMaxStops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_stops_hint"
+            android:inputType="number"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/service_date_label"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etServiceDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/service_date_hint"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvOptimizeStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/optimize_ready"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnRunOptimize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/run_optimization" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,30 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.FinalProject" parent="Theme.Material3.DayNight.NoActionBar">
+    </style>
+
+    <style name="Theme.FinalProject" parent="Base.Theme.FinalProject" />
+
+    <!-- Same button overrides for night mode -->
+    <style name="Btn">
+        <item name="backgroundTint">@null</item>
+        <item name="android:backgroundTint">@null</item>
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="Btn.Primary" parent="Btn">
+        <item name="android:background">@drawable/btn_primary_selector</item>
+    </style>
+
+    <style name="Btn.Success" parent="Btn">
+        <item name="android:background">@drawable/btn_success_selector</item>
+    </style>
+
+    <style name="Btn.Danger" parent="Btn">
+        <item name="android:background">@drawable/btn_danger_selector</item>
+    </style>
+</resources>

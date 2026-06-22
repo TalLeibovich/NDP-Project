@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="App.Screen" parent="">
+        <item name="android:background">@color/app_background</item>
+    </style>
+
+    <style name="App.Title" parent="">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="App.Title.Large" parent="App.Title">
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="App.Subtitle" parent="">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="App.Label" parent="">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="App.Body" parent="">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="App.Status" parent="App.Body">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="App.CountTitle" parent="">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="App.Input" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/input_field_background</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:paddingStart">@dimen/spacing_lg</item>
+        <item name="android:paddingEnd">@dimen/spacing_lg</item>
+        <item name="android:paddingTop">@dimen/spacing_md</item>
+        <item name="android:paddingBottom">@dimen/spacing_md</item>
+        <item name="android:minHeight">@dimen/input_height</item>
+    </style>
+
+    <style name="App.Card" parent="">
+        <item name="android:background">@drawable/card_surface</item>
+        <item name="android:padding">@dimen/spacing_lg</item>
+    </style>
+
+    <style name="App.Divider" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/border_subtle</item>
+    </style>
+
+    <style name="App.ListView" parent="">
+        <item name="android:background">@drawable/card_surface</item>
+        <item name="android:divider">@color/list_divider</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:padding">@dimen/spacing_sm</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="App.FilterSegment" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/filter_segment_selector</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/spacing_md</item>
+        <item name="android:paddingEnd">@dimen/spacing_md</item>
+        <item name="android:paddingTop">@dimen/spacing_md</item>
+        <item name="android:paddingBottom">@dimen/spacing_md</item>
+        <item name="android:textColor">@color/filter_segment_text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+    </style>
+
+    <style name="App.ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTint">@color/accent_primary</item>
+    </style>
+</resources>
