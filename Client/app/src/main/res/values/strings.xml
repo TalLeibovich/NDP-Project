@@ -165,5 +165,5 @@
 
         <string name="release_run">Release Run (Unlock Packages)</string>
 
-        <string name="google_maps_key">AIzaSyB7NmQZO3orcNsPKdr8QaXvHNes9mlWf2I</string>
+        <string name="google_maps_key">YOUR_GOOGLE_MAPS_API_KEY_HERE</string>
 </resources>
